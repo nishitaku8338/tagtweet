@@ -10,21 +10,26 @@ if (location.pathname.match("tweets/new")){  // 新規投稿画面で動く関�
       XHR.send();  // リクエストの送信にはsendメソッドを用いる
       XHR.onload = () => {
         // console.log("非同期通信成功")  // 非同期通信が成功したときには、onloadプロパティに定義された関数が呼び出される
-        const tagName = XHR.response.keyword;  // レスポンスとして返ってくるデータを受け取る。responseプロパティを使用
-        const searchResult = document.getElementById("search-result");  // search-resultというid名がついた要素を取得
-        searchResult.innerHTML = "";  // 検索結果を挿入している要素のinnerHTMLプロパティに対して、空の文字列を指定することで、表示されているタグを消す。
-        tagName.forEach((tag) => {  // 検索結果があるだけ以下の処理を繰り返す
-          const childElement = document.createElement("div");  // タグ名を格納するための要素を用意 createElementメソッドを用いて、タグを表示させるための要素を生成
-          childElement.setAttribute("class", "child");
-          childElement.setAttribute("id", tag.id);  // 生成した要素に検索結果のタグ名を指定
-          childElement.innerHTML = tag.name;  // タグを表示させるための要素(16行目)を、タグを表示させる場所(14行目の要素)に挿入する
-          searchResult.appendChild(childElement);  // タグを表示させるための要素(16行目)を、タグを表示させる場所(14行目の要素)に挿入する
-          const clickElement = document.getElementById(tag.id);  // タグを表示している要素を、定数で生成して定義する
-          clickElement.addEventListener("click", () => {  // タグを表示している要素にクリックイベントを指定
-            document.getElementById("tweets_tag_name").value = clickElement.textContent;  // タグ要素をクリックするとフォームにタグ名が入力される、
-            clickElement.remove();  // 選択したタグをクリックすると、表示されていたタグ要素は削除されるようにする
+        // const tagName = XHR.response.keyword;  // レスポンスとして返ってくるデータを受け取る。responseプロパティを使用
+        // const searchResult = document.getElementById("search-result");  // search-resultというid名がついた要素を取得
+        // searchResult.innerHTML = "";  // 検索結果を挿入している要素のinnerHTMLプロパティに対して、空の文字列を指定することで、表示されているタグを消す。
+        const searchResult = document.getElementById("search-result");
+        searchResult.innerHTML = "";
+        if (XHR.response) {
+          const tagName = XHR.response.keyword;
+          tagName.forEach((tag) => {  // 検索結果があるだけ以下の処理を繰り返す
+            const childElement = document.createElement("div");  // タグ名を格納するための要素を用意 createElementメソッドを用いて、タグを表示させるための要素を生成
+            childElement.setAttribute("class", "child");
+            childElement.setAttribute("id", tag.id);  // 生成した要素に検索結果のタグ名を指定
+            childElement.innerHTML = tag.name;  // タグを表示させるための要素(16行目)を、タグを表示させる場所(14行目の要素)に挿入する
+            searchResult.appendChild(childElement);  // タグを表示させるための要素(16行目)を、タグを表示させる場所(14行目の要素)に挿入する
+            const clickElement = document.getElementById(tag.id);  // タグを表示している要素を、定数で生成して定義する
+            clickElement.addEventListener("click", () => {  // タグを表示している要素にクリックイベントを指定
+              document.getElementById("tweets_tag_name").value = clickElement.textContent;  // タグ要素をクリックするとフォームにタグ名が入力される、
+              clickElement.remove();  // 選択したタグをクリックすると、表示されていたタグ要素は削除されるようにする
+            });
           });
-        });
+        };
       };
     });
   });
@@ -315,3 +320,54 @@ if (location.pathname.match("tweets/new")){  // 新規投稿画面で動く関�
 // その結果、検索に使用する文字列がないため、レスポンスにデータが存在せず、
 // 存在しないものをtagNameに定義しようとしているのでエラーが発生してしまう。
 // レスポンスにデータが存在する場合のみ、タグを表示させる処理が行われるようにする。
+
+
+// レスポンスにデータが存在する場合のみ処理を実行
+// レスポンスにデータが存在しない場合にもtagNameを定義しようとすると、
+// XHR.responseがnullなのでエラーが発生してしまう。
+// レスポンスにデータが存在する場合のみ、
+// タグを表示させる処理が行われるように修正する。
+// 以下のようにif文を用いて解消する。
+// if (location.pathname.match("tweets/new")){
+//   document.addEventListener("DOMContentLoaded", () => {
+// # 省略
+//       XHR.send();
+//       XHR.onload = () => {
+//         // ここから編集する
+//         const searchResult = document.getElementById("search-result");
+//         searchResult.innerHTML = "";
+//         if (XHR.response) {
+//           const tagName = XHR.response.keyword;
+//           tagName.forEach((tag) => {
+//             const childElement = document.createElement("div");
+//             childElement.setAttribute("class", "child");
+//             childElement.setAttribute("id", tag.id);
+//             childElement.innerHTML = tag.name;
+//             searchResult.appendChild(childElement);
+//             const clickElement = document.getElementById(tag.id);
+//             clickElement.addEventListener("click", () => {
+//               document.getElementById("tweets_tag_name").value = clickElement.textContent;
+//               clickElement.remove();
+//               // ここまで編集する //
+//             });
+//           });
+//         };
+//       };
+//     });
+//   });
+// };
+
+// ブラウザで確認する。
+// localhost:3000に接続して挙動を確認
+
+
+// 要点チェック
+// Formオブジェクトを用いて中間テーブルにレコードを入れる際は、保存の記述が必要であること
+
+// first_or_initializeメソッドとwhereメソッドを組み合わせると、
+// 検索した条件のレコードが存在する場合はそのレコードのインスタンスを返し、
+// 無ければ新規でインスタンスを作成できること
+
+// turbolinksが原因で、Javascriptが読み込まれない事があること
+
+// インクリメンタルサーチとは、文字の入力のつど、自動的に検索が行われる検索機能であること
