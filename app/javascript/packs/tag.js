@@ -12,16 +12,17 @@ if (location.pathname.match("tweets/new")){  // 新規投稿画面で動く関�
         // console.log("非同期通信成功")  // 非同期通信が成功したときには、onloadプロパティに定義された関数が呼び出される
         const tagName = XHR.response.keyword;  // レスポンスとして返ってくるデータを受け取る。responseプロパティを使用
         const searchResult = document.getElementById("search-result");  // search-resultというid名がついた要素を取得
+        searchResult.innerHTML = "";  // 検索結果を挿入している要素のinnerHTMLプロパティに対して、空の文字列を指定することで、表示されているタグを消す。
         tagName.forEach((tag) => {  // 検索結果があるだけ以下の処理を繰り返す
           const childElement = document.createElement("div");  // タグ名を格納するための要素を用意 createElementメソッドを用いて、タグを表示させるための要素を生成
           childElement.setAttribute("class", "child");
           childElement.setAttribute("id", tag.id);  // 生成した要素に検索結果のタグ名を指定
           childElement.innerHTML = tag.name;  // タグを表示させるための要素(16行目)を、タグを表示させる場所(14行目の要素)に挿入する
           searchResult.appendChild(childElement);  // タグを表示させるための要素(16行目)を、タグを表示させる場所(14行目の要素)に挿入する
-          // 挙動を確認したとき、複数のタグが表示されてしまうのは、現段階での仕様で、後ほど解消する。
-          childElement.addEventListener("click", () => {  // タグを表示している要素にクリックイベントを指定
-            document.getElementById("tweets_tag_name").value = childElement.textContent;  // フォームにタグ名を入力して、
-            childElement.remove();  // タグを表示している要素を削除するようにする
+          const clickElement = document.getElementById(tag.id);  // タグを表示している要素を、定数で生成して定義する
+          clickElement.addEventListener("click", () => {  // タグを表示している要素にクリックイベントを指定
+            document.getElementById("tweets_tag_name").value = clickElement.textContent;  // タグ要素をクリックするとフォームにタグ名が入力される、
+            clickElement.remove();  // 選択したタグをクリックすると、表示されていたタグ要素は削除されるようにする
           });
         });
       };
@@ -273,3 +274,44 @@ if (location.pathname.match("tweets/new")){  // 新規投稿画面で動く関�
 // この原因は、インクリメンタルサーチが行われるたびに、
 // 前回の検索結果を残したまま最新の検索結果を追加してしまうから。
 // インクリメンタルサーチが行われるたびに、直前の検索結果を消すようにする。
+
+
+// 直前の検索結果を消すようする
+// 検索結果を挿入している要素のinnerHTMLプロパティに対して、
+// 空の文字列を指定することで、表示されているタグを消す。
+// document.addEventListener("DOMContentLoaded", () => {
+//   # 省略
+//         XHR.send();
+//         XHR.onload = () => {
+//           const tagName = XHR.response.keyword;
+//           const searchResult = document.getElementById("search-result");
+//           searchResult.innerHTML = "";  // ここに記述する
+//           tagName.forEach((tag) => {
+//             const childElement = document.createElement("div");
+//             childElement.setAttribute("class", "child");
+//             childElement.setAttribute("id", tag.id);
+//             childElement.innerHTML = tag.name;
+//             searchResult.appendChild(childElement);
+//             const clickElement = document.getElementById(tag.id);
+//             clickElement.addEventListener("click", () => {
+//               document.getElementById("tweets_tag_name").value = clickElement.textContent;
+//               clickElement.remove();
+//             });
+//           });
+//         };
+//       });
+//     });
+//   };
+
+// 問題は解消されたが、
+// ここで、フォームに何も入力されていない状態にすると、
+// コンソール上にエラーが表示される。
+
+// 最後に、このエラーを解消する。
+// このエラーは、フォームに何も入力されていない状態でインクリメンタルサーチが行われていることが原因になっている。
+// 本来、インクリメンタルサーチはフォームに何か入力された場合に動作する想定の仕様になっている。
+// しかし、今回イベントに指定したkeyupは、バックスペースキーなどの「押しても文字入力されないキー」でも発火してしまう。
+
+// その結果、検索に使用する文字列がないため、レスポンスにデータが存在せず、
+// 存在しないものをtagNameに定義しようとしているのでエラーが発生してしまう。
+// レスポンスにデータが存在する場合のみ、タグを表示させる処理が行われるようにする。
