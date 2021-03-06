@@ -5,6 +5,7 @@ if (location.pathname.match("tweets/new")){  // 新規投稿画面で動く関�
       const keyword = document.getElementById("tweets_tag_name").value;
       //console.log(keyword);  //localhost:3000/tweets/new
       const XHR = new XMLHttpRequest();  //XMLHttpRequestオブジェクトを生成、変数XHRに代入
+      XHR.open("GET", `search/?keyword=${keyword}`, true);  // searchアクションへリクエストを送るように指定 openメソッド 第一引数：HTTPメソッド、第二引数：URL、第三引数：非同期通信 keywordは、5行目でフォームから取得した文字列のこと
     });
   });
 };
@@ -69,3 +70,21 @@ if (location.pathname.match("tweets/new")){  // 新規投稿画面で動く関�
 //     })
 //   });
 // };
+
+
+// openメソッドを用いてリクエストを定義
+// openメソッドの第一引数にHTTPメソッド、第二引数にURL、
+// 第三引数には非同期通信であることを示すためにtrueを指定。
+// 以下のように編集する。
+// if (location.pathname.match("tweets/new")){
+//   document.addEventListener("DOMContentLoaded", () => {
+//     const inputElement = document.getElementById("tweets_tag_name");
+//     inputElement.addEventListener("keyup", () => {
+//       const keyword = document.getElementById("tweets_tag_name").value;
+//       const XHR = new XMLHttpRequest();
+//       XHR.open("GET", `search/?keyword=${keyword}`, true);  // 編集
+//     })
+//   });
+// };
+// 7行目で、searchアクションへリクエストを送るように指定している。
+// keywordは、5行目でフォームから取得した文字列のこと。
