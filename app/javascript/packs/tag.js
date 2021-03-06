@@ -8,6 +8,29 @@ if (location.pathname.match("tweets/new")){  // 新規投稿画面で動く関�
       XHR.open("GET", `search/?keyword=${keyword}`, true);  // searchアクションへリクエストを送るように指定 openメソッド 第一引数：HTTPメソッド、第二引数：URL、第三引数：非同期通信 keywordは、5行目でフォームから取得した文字列のこと
       XHR.responseType = "json";  // コントローラーから返却されるデータの形式を、json形式に指定する
       XHR.send();  // リクエストの送信にはsendメソッドを用いる
+      XHR.onload = () => {
+        // console.log("非同期通信成功")  // 非同期通信が成功したときには、onloadプロパティに定義された関数が呼び出される
+        // const tagName = XHR.response.keyword;  // レスポンスとして返ってくるデータを受け取る。responseプロパティを使用
+        // const searchResult = document.getElementById("search-result");  // search-resultというid名がついた要素を取得
+        // searchResult.innerHTML = "";  // 検索結果を挿入している要素のinnerHTMLプロパティに対して、空の文字列を指定することで、表示されているタグを消す。
+        const searchResult = document.getElementById("search-result");
+        searchResult.innerHTML = "";
+        if (XHR.response) {
+          const tagName = XHR.response.keyword;
+          tagName.forEach((tag) => {  // 検索結果があるだけ以下の処理を繰り返す
+            const childElement = document.createElement("div");  // タグ名を格納するための要素を用意 createElementメソッドを用いて、タグを表示させるための要素を生成
+            childElement.setAttribute("class", "child");
+            childElement.setAttribute("id", tag.id);  // 生成した要素に検索結果のタグ名を指定
+            childElement.innerHTML = tag.name;  // タグを表示させるための要素(16行目)を、タグを表示させる場所(14行目の要素)に挿入する
+            searchResult.appendChild(childElement);  // タグを表示させるための要素(16行目)を、タグを表示させる場所(14行目の要素)に挿入する
+            const clickElement = document.getElementById(tag.id);  // タグを表示している要素を、定数で生成して定義する
+            clickElement.addEventListener("click", () => {  // タグを表示している要素にクリックイベントを指定
+              document.getElementById("tweets_tag_name").value = clickElement.textContent;  // タグ要素をクリックするとフォームにタグ名が入力される、
+              clickElement.remove();  // 選択したタグをクリックすると、表示されていたタグ要素は削除されるようにする
+            });
+          });
+        };
+      };
     });
   });
 };
@@ -130,3 +153,221 @@ if (location.pathname.match("tweets/new")){  // 新規投稿画面で動く関�
 // 編集できたら、リクエストを送信できているかブラウザで確認する。
 // フォームに何か入力してみる。
 // 正しく動作していれば、レスポンスが返却されている。
+
+
+// 非同期通信後の処理を実装を行う
+// 次に、コントローラから返ってきた情報を元に、タグを表示させる実装を行う。
+// まずは、非同期通信が成功したときに呼び出される関数を用意する。
+
+// 関数を用意する
+// 非同期通信が成功したときには、
+// onloadプロパティに定義された関数が呼び出される。
+// 以下のように編集する。
+// if (location.pathname.match("tweets/new")){
+//   document.addEventListener("DOMContentLoaded", () => {
+// # 省略
+//       XHR.send();
+//       XHR.onload = () => {
+//         console.log("非同期通信成功");
+//       };
+//     });
+//   });
+// };
+
+// 編集できたら、フォームに文字を入力してみる。
+// コンソール上に"非同期通信成功"と表示されたらOK。
+
+
+// サーバーサイドからのレスポンスを受け取る
+// サーバーサイドの処理が成功したときにレスポンスとして返ってくるデータを受け取る。
+// データの受け取りには、responseプロパティを使用する。
+// if (location.pathname.match("tweets/new")){
+//   document.addEventListener("DOMContentLoaded", () => {
+// # 省略
+//       XHR.send();
+//       XHR.onload = () => {
+//         const tagName = XHR.response.keyword;  // データを受け取る
+//       };
+//     });
+//   });
+// };
+
+
+// タグを表示させる処理を記述する
+// タグを表示させる手順は以下の4つ。
+// 下のコードと見比べながら、それぞれの手順を確認する。
+
+// ① タグを表示させる場所を取得する
+// 7行目では、search-resultというid名がついた要素を取得しています。
+
+// ② タグ名を格納するための要素を用意する
+// 9行目では、createElementメソッドを用いて、
+// タグを表示させるための要素を生成している。
+// 11行目では、生成した要素に検索結果のタグ名を指定している。
+
+// ③ ②の要素にタグを挿入する
+// 12行目では、②で用意した要素を①の要素に挿入している。
+// それぞれinnerHTMLプロパティとappendChildメソッドを用いる。
+
+// ④ ②と③の処理を、検索結果があるだけ繰り返す
+// 8行目では、forEachを用いて繰り返し処理を行っている。
+
+// 上記の4つの手順を参考にして、以下のように編集する。
+
+// if (location.pathname.match("tweets/new")){
+//   document.addEventListener("DOMContentLoaded", () => {
+// # 省略
+//       XHR.send();
+//       XHR.onload = () => {
+//         const tagName = XHR.response.keyword;
+//         const searchResult = document.getElementById("search-result");
+//         tagName.forEach((tag) => {
+//           const childElement = document.createElement("div");
+//           childElement.setAttribute("class", "child");
+//           childElement.setAttribute("id", tag.id);
+//           childElement.innerHTML = tag.name;
+//           searchResult.appendChild(childElement);
+//         });
+//       };
+//     });
+//   });
+// };
+
+// 編集できたら、フォームに何か入力してみましょう。
+// タグが作られていれば、正しく実装できている。
+// 挙動を確認したとき、複数のタグが表示されてしまうのは、現段階での仕様で、後ほど解消する。
+
+
+// クリックしたタグ名がフォームに入力されるようする
+// タグを表示している要素にクリックイベントを指定する。
+// クリックされたら、フォームにタグ名を入力して、
+// タグを表示している要素を削除するようにする。
+// 以下のように編集してください。
+// if (location.pathname.match("tweets/new")){
+//   document.addEventListener("DOMContentLoaded", () => {
+// # 省略
+//       XHR.send();
+//       XHR.onload = () => {
+//         const tagName = XHR.response.keyword;
+//         const searchResult = document.getElementById("search-result");
+//         tagName.forEach((tag) => {
+//           const childElement = document.createElement("div");
+//           childElement.setAttribute("class", "child");
+//           childElement.setAttribute("id", tag.id);
+//           childElement.innerHTML = tag.name;
+//           searchResult.appendChild(childElement);
+//           const clickElement = document.getElementById(tag.id);
+//           // ↓↓ここから記述する
+//           clickElement.addEventListener("click", () => {
+//             document.getElementById("tweets_tag_name").value = clickElement.textContent;
+//             clickElement.remove();
+//           });
+//         });
+//         // ここまで記述する //
+//       };
+//     });
+//   });
+// };
+
+// 編集できたら、インクリメンタルサーチを行って、
+// 表示されたタグをクリックしてみる。
+// クリックしたタグが消えて、
+// フォームにクリックしたタグ名が入力されていればOK。
+
+// しかし、
+// このままだと同じタグが何度も表示されたままになってしまう。
+// この原因は、インクリメンタルサーチが行われるたびに、
+// 前回の検索結果を残したまま最新の検索結果を追加してしまうから。
+// インクリメンタルサーチが行われるたびに、直前の検索結果を消すようにする。
+
+
+// 直前の検索結果を消すようする
+// 検索結果を挿入している要素のinnerHTMLプロパティに対して、
+// 空の文字列を指定することで、表示されているタグを消す。
+// document.addEventListener("DOMContentLoaded", () => {
+//   # 省略
+//         XHR.send();
+//         XHR.onload = () => {
+//           const tagName = XHR.response.keyword;
+//           const searchResult = document.getElementById("search-result");
+//           searchResult.innerHTML = "";  // ここに記述する
+//           tagName.forEach((tag) => {
+//             const childElement = document.createElement("div");
+//             childElement.setAttribute("class", "child");
+//             childElement.setAttribute("id", tag.id);
+//             childElement.innerHTML = tag.name;
+//             searchResult.appendChild(childElement);
+//             const clickElement = document.getElementById(tag.id);
+//             clickElement.addEventListener("click", () => {
+//               document.getElementById("tweets_tag_name").value = clickElement.textContent;
+//               clickElement.remove();
+//             });
+//           });
+//         };
+//       });
+//     });
+//   };
+
+// 問題は解消されたが、
+// ここで、フォームに何も入力されていない状態にすると、
+// コンソール上にエラーが表示される。
+
+// 最後に、このエラーを解消する。
+// このエラーは、フォームに何も入力されていない状態でインクリメンタルサーチが行われていることが原因になっている。
+// 本来、インクリメンタルサーチはフォームに何か入力された場合に動作する想定の仕様になっている。
+// しかし、今回イベントに指定したkeyupは、バックスペースキーなどの「押しても文字入力されないキー」でも発火してしまう。
+
+// その結果、検索に使用する文字列がないため、レスポンスにデータが存在せず、
+// 存在しないものをtagNameに定義しようとしているのでエラーが発生してしまう。
+// レスポンスにデータが存在する場合のみ、タグを表示させる処理が行われるようにする。
+
+
+// レスポンスにデータが存在する場合のみ処理を実行
+// レスポンスにデータが存在しない場合にもtagNameを定義しようとすると、
+// XHR.responseがnullなのでエラーが発生してしまう。
+// レスポンスにデータが存在する場合のみ、
+// タグを表示させる処理が行われるように修正する。
+// 以下のようにif文を用いて解消する。
+// if (location.pathname.match("tweets/new")){
+//   document.addEventListener("DOMContentLoaded", () => {
+// # 省略
+//       XHR.send();
+//       XHR.onload = () => {
+//         // ここから編集する
+//         const searchResult = document.getElementById("search-result");
+//         searchResult.innerHTML = "";
+//         if (XHR.response) {
+//           const tagName = XHR.response.keyword;
+//           tagName.forEach((tag) => {
+//             const childElement = document.createElement("div");
+//             childElement.setAttribute("class", "child");
+//             childElement.setAttribute("id", tag.id);
+//             childElement.innerHTML = tag.name;
+//             searchResult.appendChild(childElement);
+//             const clickElement = document.getElementById(tag.id);
+//             clickElement.addEventListener("click", () => {
+//               document.getElementById("tweets_tag_name").value = clickElement.textContent;
+//               clickElement.remove();
+//               // ここまで編集する //
+//             });
+//           });
+//         };
+//       };
+//     });
+//   });
+// };
+
+// ブラウザで確認する。
+// localhost:3000に接続して挙動を確認
+
+
+// 要点チェック
+// Formオブジェクトを用いて中間テーブルにレコードを入れる際は、保存の記述が必要であること
+
+// first_or_initializeメソッドとwhereメソッドを組み合わせると、
+// 検索した条件のレコードが存在する場合はそのレコードのインスタンスを返し、
+// 無ければ新規でインスタンスを作成できること
+
+// turbolinksが原因で、Javascriptが読み込まれない事があること
+
+// インクリメンタルサーチとは、文字の入力のつど、自動的に検索が行われる検索機能であること
