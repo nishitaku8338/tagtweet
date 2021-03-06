@@ -8,6 +8,9 @@ if (location.pathname.match("tweets/new")){  // 新規投稿画面で動く関�
       XHR.open("GET", `search/?keyword=${keyword}`, true);  // searchアクションへリクエストを送るように指定 openメソッド 第一引数：HTTPメソッド、第二引数：URL、第三引数：非同期通信 keywordは、5行目でフォームから取得した文字列のこと
       XHR.responseType = "json";  // コントローラーから返却されるデータの形式を、json形式に指定する
       XHR.send();  // リクエストの送信にはsendメソッドを用いる
+      XHR.onload = () => {
+        console.log("非同期通信成功")  // 非同期通信が成功したときには、onloadプロパティに定義された関数が呼び出される
+      };
     });
   });
 };
@@ -130,3 +133,26 @@ if (location.pathname.match("tweets/new")){  // 新規投稿画面で動く関�
 // 編集できたら、リクエストを送信できているかブラウザで確認する。
 // フォームに何か入力してみる。
 // 正しく動作していれば、レスポンスが返却されている。
+
+
+// 非同期通信後の処理を実装を行う
+// 次に、コントローラから返ってきた情報を元に、タグを表示させる実装を行う。
+// まずは、非同期通信が成功したときに呼び出される関数を用意する。
+
+// 関数を用意する
+// 非同期通信が成功したときには、
+// onloadプロパティに定義された関数が呼び出される。
+// 以下のように編集する。
+// if (location.pathname.match("tweets/new")){
+//   document.addEventListener("DOMContentLoaded", () => {
+// # 省略
+//       XHR.send();
+//       XHR.onload = () => {
+//         console.log("非同期通信成功");
+//       };
+//     });
+//   });
+// };
+
+// 編集できたら、フォームに文字を入力してみる。
+// コンソール上に"非同期通信成功"と表示されたらOK。
