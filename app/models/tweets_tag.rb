@@ -3,7 +3,7 @@ class TweetsTag
   include ActiveModel::Model
   attr_accessor :message, :name
 
-  with_options presence: ture do
+  with_options presence: true do
     validates :message
     validates :name
   end
