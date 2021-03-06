@@ -6,7 +6,8 @@ if (location.pathname.match("tweets/new")){  // 新規投稿画面で動く関�
       //console.log(keyword);  //localhost:3000/tweets/new
       const XHR = new XMLHttpRequest();  //XMLHttpRequestオブジェクトを生成、変数XHRに代入
       XHR.open("GET", `search/?keyword=${keyword}`, true);  // searchアクションへリクエストを送るように指定 openメソッド 第一引数：HTTPメソッド、第二引数：URL、第三引数：非同期通信 keywordは、5行目でフォームから取得した文字列のこと
-      XHR.responseType = "json"  // コントローラーから返却されるデータの形式を、json形式に指定する
+      XHR.responseType = "json";  // コントローラーから返却されるデータの形式を、json形式に指定する
+      XHR.send();  // リクエストの送信にはsendメソッドを用いる
     });
   });
 };
@@ -106,3 +107,26 @@ if (location.pathname.match("tweets/new")){  // 新規投稿画面で動く関�
 //     })
 //   });
 // };
+
+
+// リクエストを送信する
+// tag.jsからサーバーサイドに送信したいリクエストを定義できたので、
+// 送信する処理を記述する。
+// リクエストの送信にはsendメソッドを用いる。
+// 以下のように編集してください。
+// if (location.pathname.match("tweets/new")){
+//   document.addEventListener("DOMContentLoaded", () => {
+//     const inputElement = document.getElementById("tweets_tag_name");
+//     inputElement.addEventListener("keyup", () => {
+//       const keyword = document.getElementById("tweets_tag_name").value;
+//       const XHR = new XMLHttpRequest();
+//       XHR.open("GET", `search/?keyword=${keyword}`, true);
+//       XHR.responseType = "json";
+//       XHR.send();  // 編集する
+//     })
+//   });
+// };
+
+// 編集できたら、リクエストを送信できているかブラウザで確認する。
+// フォームに何か入力してみる。
+// 正しく動作していれば、レスポンスが返却されている。
