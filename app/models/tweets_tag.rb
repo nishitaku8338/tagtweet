@@ -15,7 +15,10 @@ class TweetsTag  # modelsディレクトリ直下にファイルを作成し、�
   # データをテーブルに保存する処理
   def save
     tweet = Tweet.create(message: message)
-    tag = Tag.create(name: name)
+    # 「first_or_initialize」は、whereメソッドと併用。
+    # whereで検索した条件のレコードがあればそのレコードのインスタンスを返し、なければ新しくインスタンスを作るメソッド
+    tag = Tag.where(name: name).first_or_initialize
+    tag.save
 
     TweetTagRelation.create(tweet_id: tweet.id, tag_id: tag.id)
   end
