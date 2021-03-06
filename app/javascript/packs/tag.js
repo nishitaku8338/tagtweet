@@ -19,6 +19,10 @@ if (location.pathname.match("tweets/new")){  // 新規投稿画面で動く関�
           childElement.innerHTML = tag.name;  // タグを表示させるための要素(16行目)を、タグを表示させる場所(14行目の要素)に挿入する
           searchResult.appendChild(childElement);  // タグを表示させるための要素(16行目)を、タグを表示させる場所(14行目の要素)に挿入する
           // 挙動を確認したとき、複数のタグが表示されてしまうのは、現段階での仕様で、後ほど解消する。
+          childElement.addEventListener("click", () => {  // タグを表示している要素にクリックイベントを指定
+            document.getElementById("tweets_tag_name").value = childElement.textContent;  // フォームにタグ名を入力して、
+            childElement.remove();  // タグを表示している要素を削除するようにする
+          });
         });
       };
     });
@@ -228,3 +232,44 @@ if (location.pathname.match("tweets/new")){  // 新規投稿画面で動く関�
 // 挙動を確認したとき、複数のタグが表示されてしまうのは、現段階での仕様で、後ほど解消する。
 
 
+// クリックしたタグ名がフォームに入力されるようする
+// タグを表示している要素にクリックイベントを指定する。
+// クリックされたら、フォームにタグ名を入力して、
+// タグを表示している要素を削除するようにする。
+// 以下のように編集してください。
+// if (location.pathname.match("tweets/new")){
+//   document.addEventListener("DOMContentLoaded", () => {
+// # 省略
+//       XHR.send();
+//       XHR.onload = () => {
+//         const tagName = XHR.response.keyword;
+//         const searchResult = document.getElementById("search-result");
+//         tagName.forEach((tag) => {
+//           const childElement = document.createElement("div");
+//           childElement.setAttribute("class", "child");
+//           childElement.setAttribute("id", tag.id);
+//           childElement.innerHTML = tag.name;
+//           searchResult.appendChild(childElement);
+//           const clickElement = document.getElementById(tag.id);
+//           // ↓↓ここから記述する
+//           clickElement.addEventListener("click", () => {
+//             document.getElementById("tweets_tag_name").value = clickElement.textContent;
+//             clickElement.remove();
+//           });
+//         });
+//         // ここまで記述する //
+//       };
+//     });
+//   });
+// };
+
+// 編集できたら、インクリメンタルサーチを行って、
+// 表示されたタグをクリックしてみる。
+// クリックしたタグが消えて、
+// フォームにクリックしたタグ名が入力されていればOK。
+
+// しかし、
+// このままだと同じタグが何度も表示されたままになってしまう。
+// この原因は、インクリメンタルサーチが行われるたびに、
+// 前回の検索結果を残したまま最新の検索結果を追加してしまうから。
+// インクリメンタルサーチが行われるたびに、直前の検索結果を消すようにする。
