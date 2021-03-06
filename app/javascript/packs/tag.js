@@ -1,0 +1,1 @@
+console.log("読み込み完了");  //localhost:3000/tweets/new 
