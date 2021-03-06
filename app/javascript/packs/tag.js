@@ -3,8 +3,8 @@ if (location.pathname.match("tweets/new")){  // 新規投稿画面で動く関�
     const inputElement = document.getElementById("tweets_tag_name");
     inputElement.addEventListener("keyup", () => {
       const keyword = document.getElementById("tweets_tag_name").value;
+      console.log(keyword);  //localhost:3000/tweets/new 
     });
-    console.log("読み込み完了");  //localhost:3000/tweets/new 
   });
 };
 
@@ -33,3 +33,25 @@ if (location.pathname.match("tweets/new")){  // 新規投稿画面で動く関�
 //     });
 //   });
 // };
+
+
+// 変数keywordの中身を確認する
+// フォームに入力されている文字列を取得できているか、
+// 変数keywordの中身をコンソール上で確認する。
+// 確認にはconsole.log()を用いる。
+
+// if (location.pathname.match("tweets/new")){
+//   document.addEventListener("DOMContentLoaded", () => {
+//     const inputElement = document.getElementById("tweets_tag_name");
+//     inputElement.addEventListener("keyup", () => {
+//       const keyword = document.getElementById("tweets_tag_name").value;
+//       console.log(keyword);
+//     });
+//   });
+// };
+
+// 編集後、フォームに何か入力して、
+// 入力した文字がコンソール上に出力できていればok。
+// イベント発火が確認ができたら、
+// 非同期通信に必要なXMLHttpRequestオブジェクトを生成する。
+// XMLHttpRequestオブジェクトを用いることで、任意のHTTPリクエストを送信できる。
