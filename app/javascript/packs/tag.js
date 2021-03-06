@@ -6,6 +6,7 @@ if (location.pathname.match("tweets/new")){  // 新規投稿画面で動く関�
       //console.log(keyword);  //localhost:3000/tweets/new
       const XHR = new XMLHttpRequest();  //XMLHttpRequestオブジェクトを生成、変数XHRに代入
       XHR.open("GET", `search/?keyword=${keyword}`, true);  // searchアクションへリクエストを送るように指定 openメソッド 第一引数：HTTPメソッド、第二引数：URL、第三引数：非同期通信 keywordは、5行目でフォームから取得した文字列のこと
+      XHR.responseType = "json"  // コントローラーから返却されるデータの形式を、json形式に指定する
     });
   });
 };
@@ -82,9 +83,26 @@ if (location.pathname.match("tweets/new")){  // 新規投稿画面で動く関�
 //     inputElement.addEventListener("keyup", () => {
 //       const keyword = document.getElementById("tweets_tag_name").value;
 //       const XHR = new XMLHttpRequest();
-//       XHR.open("GET", `search/?keyword=${keyword}`, true);  // 編集
+//       XHR.open("GET", `search/?keyword=${keyword}`, true);  // 編集する
 //     })
 //   });
 // };
 // 7行目で、searchアクションへリクエストを送るように指定している。
 // keywordは、5行目でフォームから取得した文字列のこと。
+
+
+// レスポンスの形式を指定する
+// コントローラーから返却されるデータの形式には、
+// JavaScriptと相性がよく、データとして取り扱いやすいjson形式を指定する。
+// 以下のように編集。
+// if (location.pathname.match("tweets/new")){
+//   document.addEventListener("DOMContentLoaded", () => {
+//     const inputElement = document.getElementById("tweets_tag_name");
+//     inputElement.addEventListener("keyup", () => {
+//       const keyword = document.getElementById("tweets_tag_name").value;
+//       const XHR = new XMLHttpRequest();
+//       XHR.open("GET", `search/?keyword=${keyword}`, true);
+//       XHR.responseType = "json";  // 編集する
+//     })
+//   });
+// };
