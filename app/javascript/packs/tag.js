@@ -3,7 +3,8 @@ if (location.pathname.match("tweets/new")){  // 新規投稿画面で動く関�
     const inputElement = document.getElementById("tweets_tag_name");
     inputElement.addEventListener("keyup", () => {
       const keyword = document.getElementById("tweets_tag_name").value;
-      console.log(keyword);  //localhost:3000/tweets/new 
+      //console.log(keyword);  //localhost:3000/tweets/new
+      const XHR = new XMLHttpRequest();  //XMLHttpRequestオブジェクトを生成、変数XHRに代入
     });
   });
 };
@@ -55,3 +56,16 @@ if (location.pathname.match("tweets/new")){  // 新規投稿画面で動く関�
 // イベント発火が確認ができたら、
 // 非同期通信に必要なXMLHttpRequestオブジェクトを生成する。
 // XMLHttpRequestオブジェクトを用いることで、任意のHTTPリクエストを送信できる。
+
+
+// XMLHttpRequestオブジェクトを用いてインスタンスを生成し、
+// 変数XHRに代入する。
+// if (location.pathname.match("tweets/new")){
+//   document.addEventListener("DOMContentLoaded", () => {
+//     const inputElement = document.getElementById("tweets_tag_name");
+//     inputElement.addEventListener("keyup", () => {
+//       const keyword = document.getElementById("tweets_tag_name").value;
+//       const XHR = new XMLHttpRequest();  // 追加記述
+//     })
+//   });
+// };
